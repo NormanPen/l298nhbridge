@@ -18,7 +18,7 @@ var (
 	rightmotorPWMPin = rpio.Pin(12)
 )
 
-func init() {
+func Init() {
 	if err := rpio.Open(); err != nil {
 		fmt.Println("Fehler beim Öffnen der GPIO-Pins:", err)
 		return
@@ -38,12 +38,12 @@ func init() {
 	rightmotorPWMPin.Freq(100) // PWM-Frequenz auf 100 Hz setzen
 	rightmotorPWMPin.DutyCycle(0, DC_MAX)
 
-	setMotors(0, 0)
+	SetMotors(0, 0)
 }
 
 // SetMotors steuert die Geschwindigkeit der linken und rechten Motoren
 // powerLeft und powerRight liegen zwischen -1 und 1
-func setMotors(powerLeft, powerRight float32) {
+func SetMotors(powerLeft, powerRight float32) {
 	pwmLeft := int32(powerLeft * DC_MAX)
 	pwmRight := int32(powerRight * DC_MAX)
 
@@ -57,18 +57,18 @@ func setMotors(powerLeft, powerRight float32) {
 	} else if pwmLeft > 0 {
 		leftmotorIn1Pin.High()
 	}
-	leftmotorPWMPin.DutyCycle(0, uint32(abs(pwmLeft)))
+	leftmotorPWMPin.DutyCycle(0, uint32(Abs(pwmLeft)))
 
 	if pwmRight < 0 {
 		rightmotorIn2Pin.High()
 	} else if pwmRight > 0 {
 		rightmotorIn1Pin.High()
 	}
-	rightmotorPWMPin.DutyCycle(0, uint32(abs(pwmRight)))
+	rightmotorPWMPin.DutyCycle(0, uint32(Abs(pwmRight)))
 }
 
 // StopMotors stoppt beide Motoren
-func stopMotors() {
+func StopMotors() {
 	leftmotorIn1Pin.Low()
 	leftmotorIn2Pin.Low()
 	rightmotorIn1Pin.Low()
@@ -78,12 +78,12 @@ func stopMotors() {
 }
 
 // Exit beendet die GPIO-Ressourcen
-func exit() {
-	stopMotors()
+func Exit() {
+	StopMotors()
 	rpio.Close()
 }
 
-func abs(n int32) int32 {
+func Abs(n int32) int32 {
 	if n < 0 {
 		return -n
 	}
